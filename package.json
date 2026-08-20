@@ -1,0 +1,14 @@
+{
+  "name": "cf-deployer-poc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "test": "npm --prefix backend test && npm --prefix frontend test",
+    "test:e2e": "npm --prefix frontend run test:e2e"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

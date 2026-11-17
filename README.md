@@ -26,6 +26,44 @@ Pick **mode** in the header:
 - **real** — runs the actual `docker`/`cf` scripts. Requires `docker`, the `cf`
   CLI (logged in), Java 21, and Maven on PATH.
 
+## Direct deploy (without the sandbox router)
+
+By default the deploy step runs `deploy-service-2.sh`, which pushes a stopped
+template app plus `<app>-sandbox-router` and lets the router clone one app per
+tenant. `scripts/direct-deploy/` is an opt-in alternative that pushes the
+sandboxified image as **one CF app with its own route** — no template, no
+router, no tenant clones:
+
+- `deploy.sh` — same arguments as `deploy-service-2.sh`. Runs
+  `cf push --docker-image … --no-start`, sets the env vars, `cf restart`, and
+  prints the `router URL:` line the UI reads. If the app does not start, it
+  prints the app's last log lines into the deploy log.
+- `undeploy.sh` — same arguments as `undeploy-service-2.sh`. Runs
+  `cf delete <app> -r -f`.
+
+Both log in with the CF API, user and password from the Configuration tab when
+the cf CLI is not logged in to that API (password via environment, never on
+the command line). Point the backend at them, from the repo root:
+
+```bash
+export CF_HOME=$HOME/.cf-deployer && mkdir -p "$CF_HOME"   # optional: keeps your normal cf login untouched
+export DEPLOY_PATH=$PWD/scripts/direct-deploy/deploy.sh
+export UNDEPLOY_PATH=$PWD/scripts/direct-deploy/undeploy.sh
+npm run dev
+```
+
+The A2A client then talks to the app itself (its route is shown as the router
+URL). There is no router in front of it, so the app gets the tenant claim
+unverified.
+
+> **Privileged containers.** The OpenShell supervisor needs a privileged
+> container to create its network namespace. On a standard Cloud Foundry,
+> `cf push` runs Docker apps unprivileged, so the supervisor stops with
+> `Network namespace creation failed … Operation not permitted`. The app still
+> looks healthy (the port bridge keeps `$PORT` open), but every request returns
+> 502. Deploy into a space where Docker apps get privileged containers, e.g. via
+> a Cloud Controller change scoped to one isolation segment.
+
 ## Tabs
 
 - **Configuration** — CF credentials, the Docker registry host/username/password,

@@ -76,6 +76,7 @@ export default function NewDeploymentForm({ mode = 'mock', onCreated, deployment
         value={value}
         onChange={(e) => setter(e.target.value)}
         readOnly={readOnly}
+        required
         style={{ width: '100%', padding: 8, fontSize: 16, background: readOnly ? '#f0f0f0' : 'white' }}
       />
     </div>

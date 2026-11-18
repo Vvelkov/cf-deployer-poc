@@ -3,6 +3,13 @@ import { describe, it, expect, vi } from 'vitest'
 import NewDeploymentForm from '../src/components/NewDeploymentForm.jsx'
 import * as api from '../src/api.js'
 
+// Image, org, space and app name are required inputs: fill them so the form can be submitted.
+const fillRequired = () => {
+  for (const [label, value] of [[/container image/i, 'reg.example/app:1'], [/^org/i, 'o'], [/^space/i, 's'], [/app name/i, 'app']]) {
+    fireEvent.change(screen.getByLabelText(label), { target: { value } })
+  }
+}
+
 describe('NewDeploymentForm', () => {
   it('prefills the policy textarea from the default policy', async () => {
     vi.spyOn(api, 'getDefaultPolicy').mockResolvedValue({ policy: 'version: 1\nallow_github: {}' })
@@ -16,6 +23,7 @@ describe('NewDeploymentForm', () => {
     vi.spyOn(api, 'createDeployment').mockResolvedValue({ error: 'Space gvisor-eval/sandboxed-apps already has a deployment.' })
     const onCreated = vi.fn()
     render(<NewDeploymentForm onCreated={onCreated} />)
+    fillRequired()
     fireEvent.click(screen.getByRole('button', { name: /create deployment/i }))
     await waitFor(() => expect(screen.getByText(/already has a deployment/i)).toBeInTheDocument())
     expect(onCreated).not.toHaveBeenCalled()
@@ -36,6 +44,7 @@ describe('NewDeploymentForm', () => {
     await waitFor(() => expect(screen.getByText(/LOG_LEVEL=debug/)).toBeInTheDocument())
     expect(screen.getByText(/REGION=eu-central-1/)).toBeInTheDocument()
 
+    fillRequired()
     fireEvent.click(screen.getByRole('button', { name: /create deployment/i }))
     await waitFor(() => expect(create).toHaveBeenCalledWith(expect.objectContaining({
       envVars: [{ key: 'LOG_LEVEL', value: 'debug' }, { key: 'REGION', value: 'eu-central-1' }],
@@ -55,6 +64,7 @@ describe('NewDeploymentForm', () => {
     await waitFor(() => expect(screen.getByText(/API_KEY=supe/)).toBeInTheDocument())
     expect(screen.queryByText(/supersecret/)).not.toBeInTheDocument()
 
+    fillRequired()
     fireEvent.click(screen.getByRole('button', { name: /create deployment/i }))
     await waitFor(() => expect(create).toHaveBeenCalledWith(expect.objectContaining({
       credentialsText: 'API_KEY=supersecret',

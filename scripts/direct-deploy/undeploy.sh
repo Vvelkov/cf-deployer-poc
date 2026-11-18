@@ -13,6 +13,10 @@ while [[ $# -gt 0 ]]; do
     *)          echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
+if [[ -z "$APP_NAME" ]]; then
+  echo "no app name given: nothing was deployed, so there is nothing to undeploy"
+  exit 0
+fi
 for var in ORG SPACE APP_NAME; do
   [[ -n "${!var}" ]] || { echo "missing required argument for $var" >&2; exit 2; }
 done

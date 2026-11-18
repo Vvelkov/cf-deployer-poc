@@ -19,7 +19,7 @@ test('deploy in mock mode, send A2A, see clone appear in the side panel', async 
   const panel = page.getByTestId('cf-status-panel')
   await expect(panel.getByRole('cell', { name: 'app-sandbox-router', exact: true })).toBeVisible({ timeout: 15000 })
 
-  await page.getByRole('tab', { name: /a2a/i }).click()
+  await page.getByRole('tab', { name: /http client/i }).click()
   await page.getByLabel(/tenant/i).fill('t1')
   await page.getByLabel(/message/i).fill('hello')
   await page.getByRole('button', { name: /send/i }).click()

@@ -17,11 +17,11 @@ describe('App', () => {
     render(<App />)
     expect(screen.getByRole('tab', { name: /configuration/i })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /deployment/i })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /a2a/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /http client/i })).toBeInTheDocument()
     expect(screen.queryByRole('tab', { name: /cf status/i })).not.toBeInTheDocument()
   })
 
-  it('shows the CF Status side panel on Deployment and A2A, hidden on Configuration', () => {
+  it('shows the CF Status side panel on Deployment and HTTP Client, hidden on Configuration', () => {
     render(<App />)
     // Deployment is the default-active? No — Configuration is first. Panel hidden there.
     expect(screen.queryByTestId('cf-status-panel')).not.toBeInTheDocument()
@@ -29,7 +29,7 @@ describe('App', () => {
     fireEvent.click(screen.getByRole('tab', { name: /deployment/i }))
     expect(screen.getByTestId('cf-status-panel')).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('tab', { name: /a2a/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /http client/i }))
     expect(screen.getByTestId('cf-status-panel')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('tab', { name: /configuration/i }))

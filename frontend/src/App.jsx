@@ -15,7 +15,7 @@ export default function App() {
   const tabs = [
     { id: 'config', label: 'Configuration', render: () => <ConfigurationTab /> },
     { id: 'deployment', label: 'Deployment', render: () => <DeploymentTab mode={mode} /> },
-    { id: 'a2a', label: 'A2A client', render: () => <A2AClientTab /> },
+    { id: 'a2a', label: 'HTTP Client', render: () => <A2AClientTab /> },
   ]
 
   const showPanel = PANEL_TABS.has(activeTab)

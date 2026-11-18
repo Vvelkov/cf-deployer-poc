@@ -155,11 +155,18 @@ export function registerRoutes(app, deps = {}) {
     // Sign with the configured JWT secret — must match the router's
     // JWT_DEV_SECRET, or the router rejects with 'unauthorized'.
     const secret = configStore.get().jwtSecret || process.env.JWT_DEV_SECRET || 'dev-secret'
-    const result = await executor.a2a({
-      tenant, message, url: d.routerUrl,
-      secret,
-    })
-    res.json(result)
+    if (!d.routerUrl) {
+      return res.status(409).json({ error: 'This deployment has no URL yet. Wait until its deploy step is done, then send again.' })
+    }
+    try {
+      const result = await executor.a2a({
+        tenant, message, url: d.routerUrl,
+        secret,
+      })
+      res.json(result)
+    } catch (err) {
+      res.status(502).json({ error: `Request to ${d.routerUrl} failed: ${err.message}` })
+    }
   })
 
   app.post('/api/deployments/:id/undeploy', (req, res) => {

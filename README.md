@@ -19,12 +19,10 @@ npm run dev      # backend on :3001, frontend on :5173
 
 Open http://localhost:5173.
 
-Pick **mode** in the header:
-
-- **mock** (default) — deterministic, always-succeeds; no Docker/CF needed.
-  Best for demos, rehearsals, and tests.
-- **real** — runs the actual `docker`/`cf` scripts. Requires `docker`, the `cf`
-  CLI (logged in), Java 21, and Maven on PATH.
+Deployments always run for real: the UI runs the actual `docker`/`cf` scripts.
+Requires `docker`, the `cf` CLI (logged in), Java 21, and Maven on PATH.
+A mock mode (deterministic, no Docker/CF) exists only for the automated e2e
+test, which starts the app with `VITE_DEPLOY_MODE=mock`.
 
 ## Tabs
 
